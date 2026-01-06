@@ -50,3 +50,31 @@ export class ReconnectError extends P2PQuakeError {
     Object.setPrototypeOf(this, ReconnectError.prototype);
   }
 }
+
+/**
+ * Error thrown when rate limit is exceeded
+ */
+export class RateLimitError extends P2PQuakeError {
+  constructor(
+    message: string,
+    public readonly retryAfter?: number
+  ) {
+    super(message);
+    this.name = 'RateLimitError';
+    Object.setPrototypeOf(this, RateLimitError.prototype);
+  }
+}
+
+/**
+ * Error thrown when requested resource is not found (404)
+ */
+export class NotFoundError extends P2PQuakeError {
+  constructor(
+    message: string,
+    public readonly id?: string
+  ) {
+    super(message);
+    this.name = 'NotFoundError';
+    Object.setPrototypeOf(this, NotFoundError.prototype);
+  }
+}

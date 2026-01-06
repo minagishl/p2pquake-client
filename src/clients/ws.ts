@@ -1,16 +1,16 @@
 import { EventEmitter } from 'events';
 import WebSocket from 'ws';
-import { P2PQuakeEvent, EventCode, EventTypeMap } from './types/events';
-import { DEFAULT_RECONNECT_CONFIG, ENDPOINTS } from './types/constants';
-import { Deduplicator } from './utils/deduplicator';
-import { ReconnectManager, ReconnectConfig } from './utils/reconnect';
-import { isP2PQuakeEvent } from './utils/validator';
-import { ConnectionError, ValidationError, ReconnectError } from './errors';
+import { P2PQuakeEvent, EventCode, EventTypeMap } from '../types/events';
+import { DEFAULT_RECONNECT_CONFIG, ENDPOINTS } from '../types/constants';
+import { Deduplicator } from '../utils/deduplicator';
+import { ReconnectManager, ReconnectConfig } from '../utils/reconnect';
+import { isP2PQuakeEvent } from '../utils/validator';
+import { ConnectionError, ValidationError, ReconnectError } from '../errors';
 
 /**
- * Client configuration options
+ * WebSocket client configuration options
  */
-export interface ClientOptions {
+export interface WebSocketClientOptions {
   /** WebSocket endpoint URL (default: ENDPOINTS.PRODUCTION) */
   url?: string;
 
@@ -38,7 +38,7 @@ export interface ClientOptions {
 /**
  * Internal resolved options type
  */
-interface ResolvedClientOptions {
+interface ResolvedWebSocketClientOptions {
   url: string;
   autoReconnect: boolean;
   reconnect: ReconnectConfig;
@@ -58,7 +58,7 @@ interface ResolvedClientOptions {
  *
  * @example
  * ```typescript
- * const client = new P2PQuakeClient({
+ * const client = new P2PQuakeWebSocketClient({
  *   url: ENDPOINTS.PRODUCTION,
  *   autoReconnect: true,
  *   eventCodes: [551, 556], // Only earthquake and EEW
@@ -71,20 +71,20 @@ interface ResolvedClientOptions {
  * await client.connect();
  * ```
  */
-export class P2PQuakeClient extends EventEmitter {
+export class P2PQuakeWebSocketClient extends EventEmitter {
   private ws: WebSocket | null = null;
   private deduplicator: Deduplicator;
   private reconnectManager: ReconnectManager;
-  private options: ResolvedClientOptions;
+  private options: ResolvedWebSocketClientOptions;
   private intentionalDisconnect = false;
   private isConnecting = false;
 
   /**
-   * Create a new P2P Quake client
+   * Create a new P2P Quake WebSocket client
    *
    * @param options - Client configuration options
    */
-  constructor(options: ClientOptions = {}) {
+  constructor(options: WebSocketClientOptions = {}) {
     super();
 
     // Merge options with defaults

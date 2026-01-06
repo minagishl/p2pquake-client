@@ -1,12 +1,12 @@
 import { describe, it, expect, beforeEach, mock } from 'bun:test';
-import { P2PQuakeClient } from '../src/client';
+import { P2PQuakeWebSocketClient } from '../src/clients/ws';
 import { ENDPOINTS } from '../src/types/constants';
 
-describe('P2PQuakeClient', () => {
-  let client: P2PQuakeClient;
+describe('P2PQuakeWebSocketClient', () => {
+  let client: P2PQuakeWebSocketClient;
 
   beforeEach(() => {
-    client = new P2PQuakeClient({
+    client = new P2PQuakeWebSocketClient({
       url: ENDPOINTS.PRODUCTION,
       autoReconnect: false, // Disable for testing
     });
@@ -18,7 +18,7 @@ describe('P2PQuakeClient', () => {
   });
 
   it('should accept custom options', () => {
-    const customClient = new P2PQuakeClient({
+    const customClient = new P2PQuakeWebSocketClient({
       url: 'wss://custom.example.com/ws',
       autoReconnect: true,
       eventCodes: [551, 556],
@@ -59,7 +59,7 @@ describe('P2PQuakeClient', () => {
   });
 
   it('should handle event code filtering', () => {
-    const filteredClient = new P2PQuakeClient({
+    const filteredClient = new P2PQuakeWebSocketClient({
       url: ENDPOINTS.PRODUCTION,
       eventCodes: [551], // Only JMA Quake events
     });
@@ -68,7 +68,7 @@ describe('P2PQuakeClient', () => {
   });
 
   it('should allow custom reconnection configuration', () => {
-    const reconnectClient = new P2PQuakeClient({
+    const reconnectClient = new P2PQuakeWebSocketClient({
       url: ENDPOINTS.PRODUCTION,
       autoReconnect: true,
       reconnect: {
@@ -83,7 +83,7 @@ describe('P2PQuakeClient', () => {
   });
 
   it('should support custom WebSocket headers', () => {
-    const headerClient = new P2PQuakeClient({
+    const headerClient = new P2PQuakeWebSocketClient({
       url: ENDPOINTS.PRODUCTION,
       websocket: {
         headers: {
@@ -102,9 +102,9 @@ describe('P2PQuakeClient', () => {
   });
 });
 
-describe('P2PQuakeClient Type Safety', () => {
+describe('P2PQuakeWebSocketClient Type Safety', () => {
   it('should provide type-safe event handlers', () => {
-    const client = new P2PQuakeClient({
+    const client = new P2PQuakeWebSocketClient({
       url: ENDPOINTS.PRODUCTION,
     });
 

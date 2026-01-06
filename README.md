@@ -31,10 +31,10 @@ pnpm add p2pquake-client
 ## Quick Start
 
 ```typescript
-import { P2PQuakeClient } from 'p2pquake-client';
+import { P2PQuakeWebSocketClient } from 'p2pquake-client';
 
 // Create client (uses production endpoint by default)
-const client = new P2PQuakeClient();
+const client = new P2PQuakeWebSocketClient();
 
 // Listen for earthquake information (Code 551)
 client.on(551, (earthquake) => {
@@ -74,7 +74,7 @@ await client.connect();
 Subscribe only to specific event types:
 
 ```typescript
-const client = new P2PQuakeClient({
+const client = new P2PQuakeWebSocketClient({
   eventCodes: [551, 556], // Only JMA Quake and EEW
 });
 
@@ -93,12 +93,12 @@ Use the sandbox environment or your own endpoint:
 
 ```typescript
 // Sandbox environment
-const sandboxClient = new P2PQuakeClient({
+const sandboxClient = new P2PQuakeWebSocketClient({
   url: ENDPOINTS.SANDBOX,
 });
 
 // Custom endpoint
-const customClient = new P2PQuakeClient({
+const customClient = new P2PQuakeWebSocketClient({
   url: 'wss://your-custom-endpoint.example.com/ws',
 });
 ```
@@ -108,7 +108,7 @@ const customClient = new P2PQuakeClient({
 Customize reconnection behavior:
 
 ```typescript
-const client = new P2PQuakeClient({
+const client = new P2PQuakeWebSocketClient({
   autoReconnect: true,
   reconnect: {
     initialDelay: 1000, // Start with 1 second
@@ -165,6 +165,73 @@ client.disconnect();
 client.destroy();
 ```
 
+## REST API Client
+
+For accessing historical earthquake and tsunami data, use the REST API client:
+
+```typescript
+import { P2PQuakeRestClient } from 'p2pquake-client';
+
+const restClient = new P2PQuakeRestClient();
+
+// Get recent earthquakes (list)
+const quakes = await restClient.getQuakes({
+  limit: 10,
+  minMagnitude: 5.0,
+});
+
+quakes.forEach((quake) => {
+  console.log(`Magnitude ${quake.earthquake.hypocenter.magnitude}`);
+  console.log(`Location: ${quake.earthquake.hypocenter.name}`);
+});
+
+// Get specific earthquake by ID
+const quake = await restClient.getQuakeById('20240101120000');
+
+// Get tsunami information (list)
+const tsunamis = await restClient.getTsunamis({
+  limit: 5,
+  sinceDate: '2024-01-01',
+});
+
+// Get specific tsunami by ID
+const tsunami = await restClient.getTsunamiById('20240101120000');
+```
+
+### REST API Methods
+
+- `getQuakes(options?)` - Get list of earthquakes with optional filtering
+- `getQuakeById(id)` - Get specific earthquake by ID
+- `getTsunamis(options?)` - Get list of tsunamis with optional filtering
+- `getTsunamiById(id)` - Get specific tsunami by ID
+
+### REST API Query Options
+
+**Query Parameters:**
+
+- `limit` (1-100): Maximum results (default: 10)
+- `offset` (≥0): Pagination offset (default: 0)
+- `order` (1 | -1): Sort order (default: -1 newest first)
+- `sinceDate`, `untilDate`: Date range filters (YYYY-MM-DD)
+- `minMagnitude`, `maxMagnitude`: Magnitude range (quakes only)
+- `minScale`, `maxScale`: Seismic intensity range (quakes only)
+- `prefectures`: Prefecture filters (quakes only)
+- `quakeType`: Information type filter (quakes only)
+
+**Rate Limiting:**
+
+```typescript
+const restClient = new P2PQuakeRestClient({
+  enableRateLimiting: true,
+  rateLimiting: {
+    maxRequests: 10,
+    windowMs: 60000, // 10 requests per minute
+  },
+});
+```
+
+**Note:** Rate limiting is disabled by default. The P2P Quake API enforces 10 requests per minute per IP.
+
 ## Event Types
 
 The client supports all P2P Quake event types with full TypeScript definitions:
@@ -199,12 +266,12 @@ Japanese seismic intensity scale values (in English):
 
 ## API Reference
 
-### `P2PQuakeClient`
+### `P2PQuakeWebSocketClient`
 
 #### Constructor
 
 ```typescript
-new P2PQuakeClient(options: ClientOptions)
+new P2PQuakeWebSocketClient(options: WebSocketClientOptions)
 ```
 
 **Options:**

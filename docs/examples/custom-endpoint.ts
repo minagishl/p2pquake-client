@@ -7,12 +7,12 @@
  * - Configuring reconnection behavior
  */
 
-import { P2PQuakeClient, ENDPOINTS } from 'p2pquake-client';
+import { P2PQuakeWebSocketClient, ENDPOINTS } from 'p2pquake-client';
 
 async function useSandbox() {
   console.log('=== Sandbox Environment ===\n');
 
-  const client = new P2PQuakeClient({
+  const client = new P2PQuakeWebSocketClient({
     url: ENDPOINTS.SANDBOX,
   });
 
@@ -37,7 +37,7 @@ async function useSandbox() {
 async function useCustomEndpoint() {
   console.log('=== Custom Endpoint ===\n');
 
-  const client = new P2PQuakeClient({
+  const client = new P2PQuakeWebSocketClient({
     // Use your own WebSocket endpoint
     url: 'wss://your-custom-endpoint.example.com/ws',
 

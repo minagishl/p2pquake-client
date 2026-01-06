@@ -1,13 +1,16 @@
 /**
- * P2P Quake WebSocket Client
+ * P2P Quake Client
  *
- * Type-safe WebSocket client for P2P Quake earthquake information API
+ * Type-safe WebSocket and REST API clients for P2P Quake earthquake information API
  *
  * @packageDocumentation
  */
 
-// Export main client
-export { P2PQuakeClient, ClientOptions } from './client';
+// Export WebSocket client
+export { P2PQuakeWebSocketClient, WebSocketClientOptions } from './clients/ws';
+
+// Export REST API client
+export { P2PQuakeRestClient, RestClientOptions } from './clients/rest';
 
 // Export types
 export { BasicData, SeismicIntensity, Coordinates, Hypocenter } from './types/base';
@@ -25,15 +28,28 @@ export {
   EventCode,
 } from './types/events';
 
+// Export REST API types
+export { QuakeQueryOptions, TsunamiQueryOptions, RateLimitConfig } from './types/rest';
+
 export {
   ENDPOINTS,
+  REST_ENDPOINTS,
   EVENT_CODES,
   DEFAULT_RECONNECT_CONFIG,
+  DEFAULT_RATE_LIMIT_CONFIG,
+  QUERY_LIMITS,
   SEISMIC_INTENSITY_NAMES,
 } from './types/constants';
 
 // Export errors
-export { P2PQuakeError, ConnectionError, ValidationError, ReconnectError } from './errors';
+export {
+  P2PQuakeError,
+  ConnectionError,
+  ValidationError,
+  ReconnectError,
+  RateLimitError,
+  NotFoundError,
+} from './errors';
 
 // Export utility types
 export { ReconnectConfig } from './utils/reconnect';

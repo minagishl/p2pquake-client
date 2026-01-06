@@ -7,11 +7,11 @@
  * - Using discriminated unions
  */
 
-import { P2PQuakeClient } from 'p2pquake-client';
+import { P2PQuakeWebSocketClient } from 'p2pquake-client';
 
 async function main() {
   // Create client that only listens for specific event types
-  const client = new P2PQuakeClient({
+  const client = new P2PQuakeWebSocketClient({
     // Only receive JMA Quake (551) and EEW (556) events
     eventCodes: [551, 556],
   });

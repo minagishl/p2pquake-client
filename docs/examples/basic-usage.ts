@@ -7,11 +7,11 @@
  * - Handling connection events
  */
 
-import { P2PQuakeClient } from 'p2pquake-client';
+import { P2PQuakeWebSocketClient } from 'p2pquake-client';
 
 async function main() {
   // Create client instance (uses production endpoint by default)
-  const client = new P2PQuakeClient();
+  const client = new P2PQuakeWebSocketClient();
 
   // Listen for JMA Earthquake Information (Code 551)
   client.on(551, (earthquake) => {

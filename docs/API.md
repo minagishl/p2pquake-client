@@ -4,32 +4,32 @@ Complete API reference for the P2P Quake WebSocket client.
 
 ## Table of Contents
 
-- [P2PQuakeClient](#p2pquakeclient)
+- [P2PQuakeWebSocketClient](#p2pquakewebsocketclient)
 - [Types](#types)
 - [Constants](#constants)
 - [Errors](#errors)
 - [Utilities](#utilities)
 
-## P2PQuakeClient
+## P2PQuakeWebSocketClient
 
 The main client class for connecting to P2P Quake WebSocket API.
 
 ### Constructor
 
 ```typescript
-new P2PQuakeClient(options: ClientOptions)
+new P2PQuakeWebSocketClient(options: WebSocketClientOptions)
 ```
 
 Creates a new P2P Quake client instance.
 
 **Parameters:**
 
-- `options` (ClientOptions): Configuration options
+- `options` (WebSocketClientOptions): Configuration options
 
-**ClientOptions:**
+**WebSocketClientOptions:**
 
 ```typescript
-interface ClientOptions {
+interface WebSocketClientOptions {
   url?: string;
   autoReconnect?: boolean;
   reconnect?: Partial<ReconnectConfig>;

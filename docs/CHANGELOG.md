@@ -7,6 +7,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- REST API client for accessing historical earthquake and tsunami data
+- `P2PQuakeRestClient` class with four methods:
+  - `getQuakes()` - Get list of earthquakes with query parameters
+  - `getQuakeById(id)` - Get specific earthquake by ID
+  - `getTsunamis()` - Get list of tsunamis with query parameters
+  - `getTsunamiById(id)` - Get specific tsunami by ID
+- Query parameter interfaces: `QuakeQueryOptions` and `TsunamiQueryOptions`
+- Optional rate limiting feature with token bucket algorithm
+- Comprehensive query parameter validation
+- Support for filtering by magnitude, seismic intensity, prefectures, and date ranges
+- REST API usage examples in documentation
+- `RateLimitError` for rate limit handling
+- `NotFoundError` for 404 errors when fetching by ID
+- REST API endpoints constants in `REST_ENDPOINTS`
+- Query limits constants in `QUERY_LIMITS`
+- Default rate limit configuration in `DEFAULT_RATE_LIMIT_CONFIG`
+
+### Changed
+
+- Reorganized file structure: moved clients to `src/clients/` directory
+  - `src/client.ts` → `src/clients/ws.ts`
+  - `src/rest-client.ts` → `src/clients/rest.ts`
+- Renamed WebSocket client class from `P2PQuakeClient` to `P2PQuakeWebSocketClient` for clarity
+- Renamed WebSocket client options interface from `ClientOptions` to `WebSocketClientOptions`
+
 ## [1.0.1] - 2026-01-06
 
 ### Changed

@@ -2,6 +2,7 @@ import eslint from '@eslint/js';
 import tseslint from '@typescript-eslint/eslint-plugin';
 import tsparser from '@typescript-eslint/parser';
 import prettier from 'eslint-plugin-prettier';
+import globals from 'globals';
 
 export default [
   eslint.configs.recommended,
@@ -14,15 +15,7 @@ export default [
         sourceType: 'module',
       },
       globals: {
-        // Node.js globals
-        Buffer: 'readonly',
-        NodeJS: 'readonly',
-        clearInterval: 'readonly',
-        clearTimeout: 'readonly',
-        setInterval: 'readonly',
-        setTimeout: 'readonly',
-        process: 'readonly',
-        console: 'readonly',
+        ...globals.node,
       },
     },
     plugins: {

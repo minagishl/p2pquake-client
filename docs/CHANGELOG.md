@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-01-06
+
 ### Changed
 
 - GitHub Release now includes distribution files as a single tar.gz archive instead of individual files
@@ -76,5 +78,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `url` option in `ClientOptions` is now optional (defaults to `ENDPOINTS.PRODUCTION`)
 - Constructor can be called without any arguments for simplified usage
 
-[Unreleased]: https://github.com/minagishl/p2pquake-client/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/minagishl/p2pquake-client/compare/v1.0.1...HEAD
+[1.0.1]: https://github.com/minagishl/p2pquake-client/releases/tag/v1.0.1
 [1.0.0]: https://github.com/minagishl/p2pquake-client/releases/tag/v1.0.0

@@ -238,6 +238,18 @@ export class P2PQuakeClient extends EventEmitter {
       // Parse JSON
       const message = JSON.parse(data.toString());
 
+      console.log(message);
+
+      // Normalize _id to id (API returns _id but we expect id)
+      if (
+        '_id' in message &&
+        typeof (message as { _id?: unknown })._id === 'string' &&
+        !('id' in message)
+      ) {
+        (message as { id: string }).id = (message as { _id: string })._id;
+        delete (message as { _id?: string })._id;
+      }
+
       // Validate basic structure
       if (!isP2PQuakeEvent(message)) {
         throw new ValidationError('Invalid event structure', message);

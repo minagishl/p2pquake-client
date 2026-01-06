@@ -10,6 +10,7 @@ import { EVENT_CODES } from '../src/types/constants';
 describe('validator utilities', () => {
   describe('isBasicData', () => {
     it('returns false for non-object values', () => {
+      // Should reject primitives and null/undefined
       expect(isBasicData(null)).toBe(false);
       expect(isBasicData(undefined)).toBe(false);
       expect(isBasicData('string')).toBe(false);
@@ -17,10 +18,10 @@ describe('validator utilities', () => {
     });
 
     it('returns false when required fields are missing or invalid types', () => {
-      expect(isBasicData({})).toBe(false);
-      expect(isBasicData({ id: 1, code: 551, time: '2020-01-01T00:00:00Z' })).toBe(false);
-      expect(isBasicData({ id: 'id', code: '551', time: '2020-01-01T00:00:00Z' })).toBe(false);
-      expect(isBasicData({ id: 'id', code: 551, time: 1234 })).toBe(false);
+      expect(isBasicData({})).toBe(false); // Missing all fields
+      expect(isBasicData({ id: 1, code: 551, time: '2020-01-01T00:00:00Z' })).toBe(false); // id should be string
+      expect(isBasicData({ id: 'id', code: '551', time: '2020-01-01T00:00:00Z' })).toBe(false); // code should be number
+      expect(isBasicData({ id: 'id', code: 551, time: 1234 })).toBe(false); // time should be string
     });
 
     it('returns true for valid BasicData-like object', () => {
@@ -31,24 +32,27 @@ describe('validator utilities', () => {
 
   describe('isValidEventCode', () => {
     it('returns false for non-number values', () => {
+      // Should only accept numbers
       expect(isValidEventCode('551')).toBe(false);
       expect(isValidEventCode(null)).toBe(false);
       expect(isValidEventCode(undefined)).toBe(false);
     });
 
     it('returns true only for known EVENT_CODES', () => {
+      // All defined event codes should be valid
       for (const code of EVENT_CODES) {
         expect(isValidEventCode(code)).toBe(true);
       }
 
+      // Unknown codes should be rejected
       expect(isValidEventCode(9999)).toBe(false);
     });
   });
 
   describe('isP2PQuakeEvent', () => {
     it('returns false when basic structure is invalid', () => {
-      expect(isP2PQuakeEvent({})).toBe(false);
-      expect(isP2PQuakeEvent({ id: 'id', code: 9999, time: '2020-01-01T00:00:00Z' })).toBe(false);
+      expect(isP2PQuakeEvent({})).toBe(false); // Missing required fields
+      expect(isP2PQuakeEvent({ id: 'id', code: 9999, time: '2020-01-01T00:00:00Z' })).toBe(false); // Invalid event code
     });
 
     it('returns true for valid P2PQuakeEvent-like object', () => {
@@ -65,7 +69,7 @@ describe('validator utilities', () => {
   describe('validateEvent', () => {
     it('returns false when not a valid P2PQuakeEvent', () => {
       const code = EVENT_CODES[0];
-      expect(validateEvent({}, code)).toBe(false);
+      expect(validateEvent({}, code)).toBe(false); // Invalid event structure
     });
 
     it('returns false when event code does not match expected', () => {
@@ -76,6 +80,7 @@ describe('validator utilities', () => {
         time: '2020-01-01T00:00:00Z',
       } as const;
 
+      // Event code mismatch should fail validation
       expect(validateEvent(event, code2)).toBe(false);
     });
 
@@ -87,6 +92,7 @@ describe('validator utilities', () => {
         time: '2020-01-01T00:00:00Z',
       } as const;
 
+      // Valid event with matching code should pass
       const result = validateEvent(event, code);
       expect(result).toBe(true);
     });

@@ -238,8 +238,6 @@ export class P2PQuakeClient extends EventEmitter {
       // Parse JSON
       const message = JSON.parse(data.toString());
 
-      console.log(message);
-
       // Normalize _id to id (API returns _id but we expect id)
       if (
         '_id' in message &&

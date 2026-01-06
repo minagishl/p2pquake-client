@@ -1,0 +1,15 @@
+# Dependencies
+node_modules
+
+# Build
+dist
+*.tsbuildinfo
+
+# Coverage
+coverage
+
+# Misc
+.env
+.env.*
+*.log
+bun.lock

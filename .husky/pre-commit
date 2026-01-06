@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Run prettier and eslint on staged files
+bun run format:check
+bun run lint

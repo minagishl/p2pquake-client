@@ -1,0 +1,21 @@
+# Source files
+src/
+tests/
+*.test.ts
+*.spec.ts
+
+# Config files
+tsconfig*.json
+bunfig.toml
+.github/
+.vscode/
+.gitignore
+
+# Development
+*.log
+.env*
+coverage/
+.nyc_output/
+
+# Build artifacts
+*.tsbuildinfo

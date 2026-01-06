@@ -1,0 +1,93 @@
+{
+  "name": "p2pquake-client",
+  "version": "0.0.0",
+  "description": "Type-safe WebSocket client for P2P Quake earthquake information API",
+  "keywords": [
+    "earthquake",
+    "p2pquake",
+    "websocket",
+    "seismic",
+    "japan",
+    "jma",
+    "eew",
+    "tsunami",
+    "disaster",
+    "real-time"
+  ],
+  "author": "Minagishl",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/minagishl/p2pquake-client.git"
+  },
+  "bugs": {
+    "url": "https://github.com/minagishl/p2pquake-client/issues"
+  },
+  "homepage": "https://github.com/minagishl/p2pquake-client#readme",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "bun run build:esm && bun run build:cjs && bun run build:types",
+    "build:esm": "bun build src/index.ts --outdir dist --format esm --target node --minify",
+    "build:cjs": "bun build src/index.ts --outfile dist/index.cjs --format cjs --target node --minify",
+    "build:types": "tsc --project tsconfig.build.json --emitDeclarationOnly",
+    "dev": "bun run src/index.ts",
+    "test": "bun test",
+    "test:watch": "bun test --watch",
+    "lint": "eslint . && tsc --noEmit",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "prepublishOnly": "bun run format && bun run lint && bun run test && bun run build",
+    "clean": "rm -rf dist",
+    "prepare": "husky"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^20.3.0",
+    "@commitlint/config-conventional": "^20.3.0",
+    "@types/bun": "latest",
+    "@types/node": "^20.11.5",
+    "@types/ws": "^8.5.10",
+    "@typescript-eslint/eslint-plugin": "^8.52.0",
+    "@typescript-eslint/parser": "^8.52.0",
+    "eslint": "^9.39.2",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
+    "husky": "^9.1.7",
+    "prettier": "^3.7.4",
+    "typescript": "^5.3.3"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "peerDependenciesMeta": {
+    "typescript": {
+      "optional": true
+    }
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
+}

@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-01-07
+
 ### Added
 
 - REST API client for accessing historical earthquake and tsunami data
@@ -112,6 +114,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `url` option in `ClientOptions` is now optional (defaults to `ENDPOINTS.PRODUCTION`)
 - Constructor can be called without any arguments for simplified usage
 
-[Unreleased]: https://github.com/minagishl/p2pquake-client/compare/v1.0.1...HEAD
+[Unreleased]: https://github.com/minagishl/p2pquake-client/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/minagishl/p2pquake-client/releases/tag/v1.1.0
 [1.0.1]: https://github.com/minagishl/p2pquake-client/releases/tag/v1.0.1
 [1.0.0]: https://github.com/minagishl/p2pquake-client/releases/tag/v1.0.0

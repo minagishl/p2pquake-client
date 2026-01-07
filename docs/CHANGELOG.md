@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.1] - 2026-01-07
+
+### Fixed
+
+- Improved WebSocket runtime compatibility across Node.js and Bun
+  - Introduced internal `createWebSocket` helper to prefer Bun's native `WebSocket` when available and fall back to `ws` in Node.js
+  - Normalized WebSocket message payload handling (`string`, `Buffer`, `ArrayBuffer`, typed arrays, and `Buffer[]`) to ensure robust JSON parsing
+  - Unified `readyState` and `OPEN` handling via a `WebSocketLike` interface for consistent connection state checks
+  - Reduced environment-specific handshake issues (e.g., `Unexpected server response: 101`) when using the package as a dependency
+
 ## [1.1.0] - 2026-01-07
 
 ### Added
@@ -114,7 +124,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `url` option in `ClientOptions` is now optional (defaults to `ENDPOINTS.PRODUCTION`)
 - Constructor can be called without any arguments for simplified usage
 
-[Unreleased]: https://github.com/minagishl/p2pquake-client/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/minagishl/p2pquake-client/compare/v1.1.1...HEAD
+[1.1.1]: https://github.com/minagishl/p2pquake-client/releases/tag/v1.1.1
 [1.1.0]: https://github.com/minagishl/p2pquake-client/releases/tag/v1.1.0
 [1.0.1]: https://github.com/minagishl/p2pquake-client/releases/tag/v1.0.1
 [1.0.0]: https://github.com/minagishl/p2pquake-client/releases/tag/v1.0.0

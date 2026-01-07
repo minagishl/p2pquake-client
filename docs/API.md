@@ -42,7 +42,7 @@ interface WebSocketClientOptions {
 }
 ```
 
-- `url`: WebSocket endpoint URL (optional, default: `ENDPOINTS.PRODUCTION`)
+- `url`: WebSocket endpoint URL (optional, default: `WS_ENDPOINTS.PRODUCTION`)
 - `autoReconnect`: Enable automatic reconnection (default: `true`)
 - `reconnect`: Reconnection configuration
   - `initialDelay`: Initial delay in milliseconds (default: `1000`)
@@ -482,12 +482,35 @@ Values:
 
 ## Constants
 
-### ENDPOINTS
+### WS_ENDPOINTS
+
+WebSocket endpoint URLs.
 
 ```typescript
-const ENDPOINTS: {
+const WS_ENDPOINTS: {
   PRODUCTION: 'wss://api.p2pquake.net/v2/ws';
   SANDBOX: 'wss://api-realtime-sandbox.p2pquake.net/v2/ws';
+};
+```
+
+### REST_ENDPOINTS
+
+REST API configuration.
+
+```typescript
+const REST_ENDPOINTS: {
+  PRODUCTION: {
+    BASE_URL: 'https://api.p2pquake.net/v2';
+  };
+  SANDBOX: {
+    BASE_URL: 'https://api-sandbox.p2pquake.net/v2';
+  };
+  PATHS: {
+    JMA_QUAKE: '/jma/quake';
+    JMA_TSUNAMI: '/jma/tsunami';
+    JMA_QUAKE_BY_ID: (id: string) => string;
+    JMA_TSUNAMI_BY_ID: (id: string) => string;
+  };
 };
 ```
 
@@ -562,6 +585,59 @@ class ReconnectError extends P2PQuakeError {
 ```
 
 ## Utilities
+
+### buildRestUrl
+
+Build complete REST API URLs.
+
+```typescript
+function buildRestUrl(environment: 'PRODUCTION' | 'SANDBOX', path?: RestPath, id?: string): string;
+```
+
+**Parameters:**
+
+- `environment`: Environment name (PRODUCTION or SANDBOX)
+- `path`: API path segment (optional)
+- `id`: ID for dynamic paths (optional, required for \*\_BY_ID paths)
+
+**Returns:** Complete REST API URL
+
+**Examples:**
+
+```typescript
+// Get base URL
+buildRestUrl('PRODUCTION');
+// → 'https://api.p2pquake.net/v2'
+
+// Build URL with static path
+buildRestUrl('PRODUCTION', 'JMA_QUAKE');
+// → 'https://api.p2pquake.net/v2/jma/quake'
+
+// Build URL with dynamic path
+buildRestUrl('PRODUCTION', 'JMA_QUAKE_BY_ID', '20240101120000');
+// → 'https://api.p2pquake.net/v2/jma/quake/20240101120000'
+```
+
+### getRestBaseUrl
+
+Get REST API base URL for an environment.
+
+```typescript
+function getRestBaseUrl(environment: 'PRODUCTION' | 'SANDBOX'): string;
+```
+
+**Parameters:**
+
+- `environment`: Environment name (PRODUCTION or SANDBOX)
+
+**Returns:** Base URL for the environment
+
+**Examples:**
+
+```typescript
+getRestBaseUrl('PRODUCTION'); // → 'https://api.p2pquake.net/v2'
+getRestBaseUrl('SANDBOX'); // → 'https://api-sandbox.p2pquake.net/v2'
+```
 
 ### Validators
 

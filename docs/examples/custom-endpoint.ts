@@ -7,13 +7,13 @@
  * - Configuring reconnection behavior
  */
 
-import { P2PQuakeWebSocketClient, ENDPOINTS } from 'p2pquake-client';
+import { P2PQuakeWebSocketClient, WS_ENDPOINTS } from 'p2pquake-client';
 
 async function useSandbox() {
   console.log('=== Sandbox Environment ===\n');
 
   const client = new P2PQuakeWebSocketClient({
-    url: ENDPOINTS.SANDBOX,
+    url: WS_ENDPOINTS.SANDBOX,
   });
 
   client.on('connect', () => {

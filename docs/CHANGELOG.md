@@ -33,6 +33,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `src/rest-client.ts` → `src/clients/rest.ts`
 - Renamed WebSocket client class from `P2PQuakeClient` to `P2PQuakeWebSocketClient` for clarity
 - Renamed WebSocket client options interface from `ClientOptions` to `WebSocketClientOptions`
+- Renamed `ENDPOINTS` to `WS_ENDPOINTS` for consistency with protocol naming
+- Restructured `REST_ENDPOINTS` to use environment-based keys:
+  - `REST_ENDPOINTS.BASE_URL` → `REST_ENDPOINTS.PRODUCTION.BASE_URL`
+  - `REST_ENDPOINTS.SANDBOX_BASE_URL` → `REST_ENDPOINTS.SANDBOX.BASE_URL`
+  - API paths moved to `REST_ENDPOINTS.PATHS` namespace (e.g., `REST_ENDPOINTS.PATHS.JMA_QUAKE`)
+- Added helper functions: `buildRestUrl()` for constructing REST API URLs, `getRestBaseUrl()` for environment base URLs
+- Added type exports: `Environment` and `RestPath` for better TypeScript support
 
 ## [1.0.1] - 2026-01-06
 

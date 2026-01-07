@@ -94,7 +94,7 @@ Use the sandbox environment or your own endpoint:
 ```typescript
 // Sandbox environment
 const sandboxClient = new P2PQuakeWebSocketClient({
-  url: ENDPOINTS.SANDBOX,
+  url: WS_ENDPOINTS.SANDBOX,
 });
 
 // Custom endpoint
@@ -276,7 +276,7 @@ new P2PQuakeWebSocketClient(options: WebSocketClientOptions)
 
 **Options:**
 
-- `url` (string, optional, default: `ENDPOINTS.PRODUCTION`): WebSocket endpoint URL
+- `url` (string, optional, default: `WS_ENDPOINTS.PRODUCTION`): WebSocket endpoint URL
 - `autoReconnect` (boolean, default: `true`): Enable automatic reconnection
 - `reconnect` (object, optional): Reconnection configuration
   - `initialDelay` (number, default: `1000`): Initial delay in ms
@@ -314,10 +314,30 @@ new P2PQuakeWebSocketClient(options: WebSocketClientOptions)
 ### Constants
 
 ```typescript
-import { ENDPOINTS, EVENT_CODES, SEISMIC_INTENSITY_NAMES } from 'p2pquake-client';
+import {
+  WS_ENDPOINTS,
+  REST_ENDPOINTS,
+  buildRestUrl,
+  EVENT_CODES,
+  SEISMIC_INTENSITY_NAMES,
+} from 'p2pquake-client';
 
-ENDPOINTS.PRODUCTION; // 'wss://api.p2pquake.net/v2/ws'
-ENDPOINTS.SANDBOX; // 'wss://api-realtime-sandbox.p2pquake.net/v2/ws'
+// WebSocket endpoints
+WS_ENDPOINTS.PRODUCTION; // 'wss://api.p2pquake.net/v2/ws'
+WS_ENDPOINTS.SANDBOX; // 'wss://api-realtime-sandbox.p2pquake.net/v2/ws'
+
+// REST API endpoints
+REST_ENDPOINTS.PRODUCTION.BASE_URL; // 'https://api.p2pquake.net/v2'
+REST_ENDPOINTS.SANDBOX.BASE_URL; // 'https://api-sandbox.p2pquake.net/v2'
+REST_ENDPOINTS.PATHS.JMA_QUAKE; // '/jma/quake'
+REST_ENDPOINTS.PATHS.JMA_TSUNAMI; // '/jma/tsunami'
+
+// Helper functions for REST URLs
+buildRestUrl('PRODUCTION', 'JMA_QUAKE');
+// → 'https://api.p2pquake.net/v2/jma/quake'
+
+buildRestUrl('PRODUCTION', 'JMA_QUAKE_BY_ID', '20240101120000');
+// → 'https://api.p2pquake.net/v2/jma/quake/20240101120000'
 
 EVENT_CODES; // [551, 552, 554, 555, 556, 561, 9611]
 

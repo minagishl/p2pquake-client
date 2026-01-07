@@ -32,13 +32,17 @@ export {
 export { QuakeQueryOptions, TsunamiQueryOptions, RateLimitConfig } from './types/rest';
 
 export {
-  ENDPOINTS,
+  WS_ENDPOINTS,
   REST_ENDPOINTS,
   EVENT_CODES,
   DEFAULT_RECONNECT_CONFIG,
   DEFAULT_RATE_LIMIT_CONFIG,
   QUERY_LIMITS,
   SEISMIC_INTENSITY_NAMES,
+  buildRestUrl,
+  getRestBaseUrl,
+  type Environment,
+  type RestPath,
 } from './types/constants';
 
 // Export errors

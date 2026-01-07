@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events';
 import WebSocket from 'ws';
 import { P2PQuakeEvent, EventCode, EventTypeMap } from '../types/events';
-import { DEFAULT_RECONNECT_CONFIG, ENDPOINTS } from '../types/constants';
+import { DEFAULT_RECONNECT_CONFIG, WS_ENDPOINTS } from '../types/constants';
 import { Deduplicator } from '../utils/deduplicator';
 import { ReconnectManager, ReconnectConfig } from '../utils/reconnect';
 import { isP2PQuakeEvent } from '../utils/validator';
@@ -11,7 +11,7 @@ import { ConnectionError, ValidationError, ReconnectError } from '../errors';
  * WebSocket client configuration options
  */
 export interface WebSocketClientOptions {
-  /** WebSocket endpoint URL (default: ENDPOINTS.PRODUCTION) */
+  /** WebSocket endpoint URL (default: WS_ENDPOINTS.PRODUCTION) */
   url?: string;
 
   /** Enable automatic reconnection (default: true) */
@@ -59,7 +59,7 @@ interface ResolvedWebSocketClientOptions {
  * @example
  * ```typescript
  * const client = new P2PQuakeWebSocketClient({
- *   url: ENDPOINTS.PRODUCTION,
+ *   url: WS_ENDPOINTS.PRODUCTION,
  *   autoReconnect: true,
  *   eventCodes: [551, 556], // Only earthquake and EEW
  * });
@@ -94,7 +94,7 @@ export class P2PQuakeWebSocketClient extends EventEmitter {
     };
 
     this.options = {
-      url: options.url ?? ENDPOINTS.PRODUCTION,
+      url: options.url ?? WS_ENDPOINTS.PRODUCTION,
       autoReconnect: options.autoReconnect ?? true,
       reconnect: reconnectConfig,
       eventCodes: options.eventCodes ?? [551, 552, 554, 555, 556, 561, 9611],

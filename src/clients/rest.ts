@@ -1,6 +1,6 @@
 import type { RestClientOptions, QuakeQueryOptions, TsunamiQueryOptions } from '../types/rest';
 import { JMAQuake, JMATsunami } from '../types/events';
-import { REST_ENDPOINTS, DEFAULT_RATE_LIMIT_CONFIG } from '../types/constants';
+import { REST_ENDPOINTS, DEFAULT_RATE_LIMIT_CONFIG, getRestBaseUrl } from '../types/constants';
 import { RateLimiter } from '../utils/rate-limiter';
 import { buildQueryUrl, toApiParams } from '../utils/query-builder';
 import { validateQuakeQuery, validateTsunamiQuery } from '../utils/query-validator';
@@ -39,7 +39,7 @@ export class P2PQuakeRestClient {
   private rateLimiter?: RateLimiter;
 
   constructor(options: RestClientOptions = {}) {
-    this.baseUrl = options.baseUrl ?? REST_ENDPOINTS.BASE_URL;
+    this.baseUrl = options.baseUrl ?? getRestBaseUrl('PRODUCTION');
     this.timeout = options.timeout ?? 10000;
     this.headers = {
       Accept: 'application/json',
@@ -75,7 +75,7 @@ export class P2PQuakeRestClient {
 
     // Build query string
     const params = toApiParams(options);
-    const url = buildQueryUrl(this.baseUrl + REST_ENDPOINTS.JMA_QUAKE, params);
+    const url = buildQueryUrl(this.baseUrl + REST_ENDPOINTS.PATHS.JMA_QUAKE, params);
 
     // Make request
     const data = await this.request<JMAQuake[]>(url);
@@ -117,7 +117,7 @@ export class P2PQuakeRestClient {
 
     // Build query string
     const params = toApiParams(options);
-    const url = buildQueryUrl(this.baseUrl + REST_ENDPOINTS.JMA_TSUNAMI, params);
+    const url = buildQueryUrl(this.baseUrl + REST_ENDPOINTS.PATHS.JMA_TSUNAMI, params);
 
     // Make request
     const data = await this.request<JMATsunami[]>(url);
@@ -158,7 +158,7 @@ export class P2PQuakeRestClient {
     }
 
     // Build URL
-    const url = this.baseUrl + REST_ENDPOINTS.JMA_QUAKE_BY_ID(id);
+    const url = this.baseUrl + REST_ENDPOINTS.PATHS.JMA_QUAKE_BY_ID(id);
 
     // Make request
     const data = await this.request<JMAQuake>(url, id);
@@ -192,7 +192,7 @@ export class P2PQuakeRestClient {
     }
 
     // Build URL
-    const url = this.baseUrl + REST_ENDPOINTS.JMA_TSUNAMI_BY_ID(id);
+    const url = this.baseUrl + REST_ENDPOINTS.PATHS.JMA_TSUNAMI_BY_ID(id);
 
     // Make request
     const data = await this.request<JMATsunami>(url, id);

@@ -1,13 +1,13 @@
 import { describe, it, expect, beforeEach, mock } from 'bun:test';
 import { P2PQuakeWebSocketClient } from '../src/clients/ws';
-import { ENDPOINTS } from '../src/types/constants';
+import { WS_ENDPOINTS, buildRestUrl, getRestBaseUrl } from '../src/types/constants';
 
 describe('P2PQuakeWebSocketClient', () => {
   let client: P2PQuakeWebSocketClient;
 
   beforeEach(() => {
     client = new P2PQuakeWebSocketClient({
-      url: ENDPOINTS.PRODUCTION,
+      url: WS_ENDPOINTS.PRODUCTION,
       autoReconnect: false, // Disable for testing
     });
   });
@@ -60,7 +60,7 @@ describe('P2PQuakeWebSocketClient', () => {
 
   it('should handle event code filtering', () => {
     const filteredClient = new P2PQuakeWebSocketClient({
-      url: ENDPOINTS.PRODUCTION,
+      url: WS_ENDPOINTS.PRODUCTION,
       eventCodes: [551], // Only JMA Quake events
     });
 
@@ -69,7 +69,7 @@ describe('P2PQuakeWebSocketClient', () => {
 
   it('should allow custom reconnection configuration', () => {
     const reconnectClient = new P2PQuakeWebSocketClient({
-      url: ENDPOINTS.PRODUCTION,
+      url: WS_ENDPOINTS.PRODUCTION,
       autoReconnect: true,
       reconnect: {
         initialDelay: 2000,
@@ -84,7 +84,7 @@ describe('P2PQuakeWebSocketClient', () => {
 
   it('should support custom WebSocket headers', () => {
     const headerClient = new P2PQuakeWebSocketClient({
-      url: ENDPOINTS.PRODUCTION,
+      url: WS_ENDPOINTS.PRODUCTION,
       websocket: {
         headers: {
           'X-API-Key': 'test-key',
@@ -105,7 +105,7 @@ describe('P2PQuakeWebSocketClient', () => {
 describe('P2PQuakeWebSocketClient Type Safety', () => {
   it('should provide type-safe event handlers', () => {
     const client = new P2PQuakeWebSocketClient({
-      url: ENDPOINTS.PRODUCTION,
+      url: WS_ENDPOINTS.PRODUCTION,
     });
 
     // Type checking at compile time - these should not cause TypeScript errors
@@ -128,5 +128,55 @@ describe('P2PQuakeWebSocketClient Type Safety', () => {
     });
 
     client.destroy();
+  });
+});
+
+describe('REST_ENDPOINTS helpers', () => {
+  describe('buildRestUrl', () => {
+    it('should return base URL when no path is provided', () => {
+      expect(buildRestUrl('PRODUCTION')).toBe('https://api.p2pquake.net/v2');
+      expect(buildRestUrl('SANDBOX')).toBe('https://api-sandbox.p2pquake.net/v2');
+    });
+
+    it('should build URL with static path', () => {
+      expect(buildRestUrl('PRODUCTION', 'JMA_QUAKE')).toBe('https://api.p2pquake.net/v2/jma/quake');
+      expect(buildRestUrl('PRODUCTION', 'JMA_TSUNAMI')).toBe(
+        'https://api.p2pquake.net/v2/jma/tsunami'
+      );
+      expect(buildRestUrl('SANDBOX', 'JMA_QUAKE')).toBe(
+        'https://api-sandbox.p2pquake.net/v2/jma/quake'
+      );
+    });
+
+    it('should build URL with dynamic path (by ID)', () => {
+      expect(buildRestUrl('PRODUCTION', 'JMA_QUAKE_BY_ID', '20240101120000')).toBe(
+        'https://api.p2pquake.net/v2/jma/quake/20240101120000'
+      );
+      expect(buildRestUrl('PRODUCTION', 'JMA_TSUNAMI_BY_ID', '20240101120000')).toBe(
+        'https://api.p2pquake.net/v2/jma/tsunami/20240101120000'
+      );
+      expect(buildRestUrl('SANDBOX', 'JMA_QUAKE_BY_ID', 'test123')).toBe(
+        'https://api-sandbox.p2pquake.net/v2/jma/quake/test123'
+      );
+    });
+
+    it('should throw error when ID is required but not provided', () => {
+      expect(() => buildRestUrl('PRODUCTION', 'JMA_QUAKE_BY_ID')).toThrow(
+        'ID is required for path: JMA_QUAKE_BY_ID'
+      );
+      expect(() => buildRestUrl('PRODUCTION', 'JMA_TSUNAMI_BY_ID')).toThrow(
+        'ID is required for path: JMA_TSUNAMI_BY_ID'
+      );
+    });
+  });
+
+  describe('getRestBaseUrl', () => {
+    it('should return correct base URL for PRODUCTION', () => {
+      expect(getRestBaseUrl('PRODUCTION')).toBe('https://api.p2pquake.net/v2');
+    });
+
+    it('should return correct base URL for SANDBOX', () => {
+      expect(getRestBaseUrl('SANDBOX')).toBe('https://api-sandbox.p2pquake.net/v2');
+    });
   });
 });

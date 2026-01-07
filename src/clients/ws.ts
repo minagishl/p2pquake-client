@@ -1,11 +1,11 @@
 import { EventEmitter } from 'events';
-import WebSocket from 'ws';
 import { P2PQuakeEvent, EventCode, EventTypeMap } from '../types/events';
 import { DEFAULT_RECONNECT_CONFIG, WS_ENDPOINTS } from '../types/constants';
 import { Deduplicator } from '../utils/deduplicator';
 import { ReconnectManager, ReconnectConfig } from '../utils/reconnect';
 import { isP2PQuakeEvent } from '../utils/validator';
 import { ConnectionError, ValidationError, ReconnectError } from '../errors';
+import { WebSocketLike, WebSocketMessageData, createWebSocket } from '../utils/websocket';
 
 /**
  * WebSocket client configuration options
@@ -72,7 +72,7 @@ interface ResolvedWebSocketClientOptions {
  * ```
  */
 export class P2PQuakeWebSocketClient extends EventEmitter {
-  private ws: WebSocket | null = null;
+  private ws: WebSocketLike | null = null;
   private deduplicator: Deduplicator;
   private reconnectManager: ReconnectManager;
   private options: ResolvedWebSocketClientOptions;
@@ -177,7 +177,7 @@ export class P2PQuakeWebSocketClient extends EventEmitter {
    * Get current connection state
    */
   public get isConnected(): boolean {
-    return this.ws !== null && this.ws.readyState === WebSocket.OPEN;
+    return this.ws !== null && this.ws.readyState === this.ws.OPEN;
   }
 
   /**
@@ -212,9 +212,7 @@ export class P2PQuakeWebSocketClient extends EventEmitter {
   private setupWebSocket(): void {
     const { url, websocket } = this.options;
 
-    this.ws = new WebSocket(url, websocket.protocols, {
-      headers: websocket.headers,
-    });
+    this.ws = createWebSocket(url, websocket);
 
     this.ws.on('open', () => this.handleOpen());
     this.ws.on('message', (data) => this.handleMessage(data));
@@ -233,10 +231,10 @@ export class P2PQuakeWebSocketClient extends EventEmitter {
   /**
    * Handle WebSocket message event
    */
-  private handleMessage(data: WebSocket.Data): void {
+  private handleMessage(data: WebSocketMessageData): void {
     try {
       // Parse JSON
-      const message = JSON.parse(data.toString());
+      const message = JSON.parse(this.normalizeMessageData(data));
 
       // Normalize _id to id (API returns _id but we expect id)
       if (
@@ -280,9 +278,9 @@ export class P2PQuakeWebSocketClient extends EventEmitter {
   /**
    * Handle WebSocket close event
    */
-  private handleClose(code: number, reason: Buffer): void {
+  private handleClose(code: number, reason: Buffer | string): void {
     this.ws = null;
-    const reasonString = reason.toString();
+    const reasonString = typeof reason === 'string' ? reason : reason.toString();
 
     this.emit('disconnect', code, reasonString);
 
@@ -297,6 +295,39 @@ export class P2PQuakeWebSocketClient extends EventEmitter {
    */
   private handleError(error: Error): void {
     this.emit('error', new ConnectionError(error.message));
+  }
+
+  private normalizeMessageData(data: WebSocketMessageData): string {
+    if (typeof data === 'string') {
+      return data;
+    }
+    if (Buffer.isBuffer(data)) {
+      return data.toString();
+    }
+    if (data instanceof ArrayBuffer) {
+      return Buffer.from(data).toString();
+    }
+    if (ArrayBuffer.isView(data)) {
+      return Buffer.from(data.buffer, data.byteOffset, data.byteLength).toString();
+    }
+    if (Array.isArray(data)) {
+      const buffers = (data as Array<Buffer | ArrayBuffer | ArrayBufferView | string>).map(
+        (chunk) => {
+          if (typeof chunk === 'string') {
+            return Buffer.from(chunk);
+          }
+          if (Buffer.isBuffer(chunk)) {
+            return chunk;
+          }
+          if (ArrayBuffer.isView(chunk)) {
+            return Buffer.from(chunk.buffer, chunk.byteOffset, chunk.byteLength);
+          }
+          return Buffer.from(chunk);
+        }
+      );
+      return Buffer.concat(buffers).toString();
+    }
+    return data === undefined || data === null ? '' : String(data);
   }
 
   /**
